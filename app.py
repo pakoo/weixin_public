@@ -69,13 +69,26 @@ class  weixin(tornado.web.RequestHandler):
                 ctime = str(res['publish_time'])
                 place = '上海'
             elif self.wxtext == '2':
-                res = get_pm('guangzhou')
+                res = get_pm('beijing')
                 pm25 = res['data']
                 ctime = str(res['publish_time'])
                 place = '北京'
+            elif self.wxtext == '3':
+                res = get_pm('guangzhou')
+                pm25 = res['data']
+                ctime = str(res['publish_time'])
+                place = '广州'
+            elif self.wxtext == '4':
+                res = get_pm('chengdu')
+                pm25 = res['data']
+                ctime = str(res['publish_time'])
+                place = '成都'
             else:
                 a = """发送 “1”查询上海 美国领事馆发布的 pm2.5 数据
-\n发送 “2”查询北京 美国领事馆发布的 pm2.5 数据"""
+                     \n发送 “2”查询北京 美国领事馆发布的 pm2.5 数据
+                     \n发送 “3”查询广州 美国领事馆发布的 pm2.5 数据
+                     \n发送 “4”查询成都 美国领事馆发布的 pm2.5 数据
+                    """
                 self.send_text(a)    
                 return 
                 
