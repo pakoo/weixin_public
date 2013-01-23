@@ -6,6 +6,12 @@ import tornado.httpserver
 import logging
 from BeautifulSoup import BeautifulSoup
 import time
+import pymongo
+from pymongo import MongoClient
+from pymongo import ASCENDING,DESCENDING
+
+con = MongoClient('localhost',27017)
+db = con.air.pm
 
 text_tmp = """
 <xml>
@@ -17,6 +23,11 @@ text_tmp = """
     <FuncFlag>0</FuncFlag>
 </xml> 
             """
+
+def get_pm(place):
+    res = db.find_one({'location':place},sort=[('create_time',DESCENDING)])    
+    if res:
+        return res
 
 class  weixin(tornado.web.RequestHandler):
 
@@ -52,12 +63,25 @@ class  weixin(tornado.web.RequestHandler):
 
     def post(self):
         if self.msgtype == 'text':
-            pass
+            if self.wxtext == '1':
+                res = get_pm('shanghai')
+                pm25 = res['data']
+                ctime = str(res['create_time'])
+            elif self.wxtext == '2':
+                res = get_pm('guangzhou')
+                pm25 = res['data']
+                ctime = str(res['create_time'])
+            else:
+                a = """发送 “1”查询上海 美国领事馆发布的 pm2.5 数据
+\n发送 “2”查询北京 美国领事馆发布的 pm2.5 数据"""
+                self.send_text(a)    
+                return 
+                
+            self.send_text("pm2.5:%s   at %s"%(pm25,ctime))    
         elif self.msgtype == 'location':
-            pass
+            self.send_text('我收到你消息啦!!')
         elif self.msgtype == 'image':
-            pass
-        self.send_text('我收到你消息啦!!')
+            self.send_text('我收到你消息啦!!')
 
     def send_text(self,msg):
         #self.set_header("Content-Type","application/xml; charset=UTF-8")
@@ -76,5 +100,5 @@ class Application(tornado.web.Application):
 
 if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(request_callback=Application())
-    http_server.listen(7070)
+    http_server.listen(8001)
     tornado.ioloop.IOLoop.instance().start()
