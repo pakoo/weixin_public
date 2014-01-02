@@ -29,19 +29,19 @@ class  weixin(tornado.web.RequestHandler):
             self.userid  = soup.find('fromusername').text
             self.createtime = soup.find('createtime').text
             self.msgtype = soup.find('msgtype').text
-            self.myid = soup.find('ToUserName').text
+            self.myid = soup.find('tousername').text
             if self.msgtype == 'text':
                 self.wxtext = soup.find('content').text
                 print 'text:',self.wxtext  
             elif self.msgtype == 'location':
-                self.location_x = soup.find('Location_X').text 
-                self.location_y = soup.find('Location_Y').text 
-                self.location_scale = soup.find('Scale').text 
-                self.location_lable = soup.find('Label').text 
+                self.location_x = soup.find('location_x').text 
+                self.location_y = soup.find('location_y').text 
+                self.location_scale = soup.find('scale').text 
+                self.location_lable = soup.find('label').text 
                 print 'x:',self.location_x  
                 print 'y:',self.location_y
             elif self.msgtype == 'image':
-                self.picurl = soup.find('PicUrl').text 
+                self.picurl = soup.find('picurl').text 
                 print 'pic url:',self.picurl 
         else:
             logging.info('request:%s'%self.request) 
